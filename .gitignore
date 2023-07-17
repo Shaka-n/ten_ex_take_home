@@ -35,3 +35,5 @@ ten_ex_take_home-*.tar
 npm-debug.log
 /assets/node_modules/
 
+**/**.secret.exs
+

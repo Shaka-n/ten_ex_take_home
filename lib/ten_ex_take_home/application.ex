@@ -17,7 +17,8 @@ defmodule TenExTakeHome.Application do
       # Start Finch
       {Finch, name: TenExTakeHome.Finch},
       # Start the Endpoint (http/https)
-      TenExTakeHomeWeb.Endpoint
+      TenExTakeHomeWeb.Endpoint,
+      {Cachex, name: :marvel}
       # Start a worker by calling: TenExTakeHome.Worker.start_link(arg)
       # {TenExTakeHome.Worker, arg}
     ]
