@@ -8,12 +8,15 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
   def get_all_characters(page \\ 0, results_per_page \\ 20) do
     {:ok, characters} = check_cache(:characters)
 
-    {next_etag, next_characters_list} = if characters["#{page}"], do: characters["#{page}"], else: {"", []}
+    {next_etag, next_characters_list} =
+      if characters["#{page}"], do: characters["#{page}"], else: {"", []}
 
-    {:ok, response} = HTTPoison.get("http://gateway.marvel.com/v1/public/characters",
-    ["If-None-Match": next_etag],
-    [params: configure_params(page, results_per_page)
-    ])
+    {:ok, response} =
+      HTTPoison.get(
+        "http://gateway.marvel.com/v1/public/characters",
+        ["If-None-Match": next_etag],
+        params: configure_params(page, results_per_page)
+      )
 
     case response.status_code do
       200 ->
@@ -21,12 +24,19 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
         next_characters_list = Enum.map(decoded["data"]["results"], fn ch -> ch["name"] end)
 
         MarvelApiMetrics.insert_marvel_api_metric(%{etag: decoded["etag"], resource: "characters"})
-        Cachex.put(:marvel, :characters, Map.put(characters, "#{page}", {decoded["etag"], next_characters_list}))
+
+        Cachex.put(
+          :marvel,
+          :characters,
+          Map.put(characters, "#{page}", {decoded["etag"], next_characters_list})
+        )
 
         {:ok, next_characters_list}
+
       304 ->
         MarvelApiMetrics.insert_marvel_api_metric(%{etag: next_etag, resource: "characters"})
         {:ok, next_characters_list}
+
       _ ->
         {:error, "Something has gone wrong when contacting the Marvel API."}
     end
@@ -45,6 +55,7 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
     case Cachex.get(:marvel, resource) do
       {:ok, nil} ->
         {:ok, %{}}
+
       cache ->
         cache
     end

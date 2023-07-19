@@ -7,7 +7,6 @@ defmodule TenExTakeHome.MarvelApi.MarvelApiMetrics do
   alias TenExTakeHome.Marvel.MarvelApiMetric
   alias TenExTakeHome.Repo
 
-
   def insert_marvel_api_metric(attrs) do
     %MarvelApiMetric{}
     |> MarvelApiMetric.changeset(attrs)

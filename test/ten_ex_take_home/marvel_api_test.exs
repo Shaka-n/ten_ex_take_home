@@ -5,7 +5,7 @@ defmodule TenExTakeHome.MarvelApiTest do
   alias TenExTakeHome.Marvel.{MarvelApi, MarvelApiMetric}
 
   setup do
-    HTTPoison.start
+    HTTPoison.start()
     :ok
   end
 
