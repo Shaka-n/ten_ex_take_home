@@ -49,7 +49,6 @@ defmodule TenExTakeHomeWeb.CharactersLive do
   end
 
   def handle_event("update-results-per-page", %{"results_per_page" => new_results_per_page}=payload, %{assigns: %{page: page}} = socket) do
-    IO.inspect(payload, label: "=======EVENT PAYLOAD=======")
     characters = MarvelApi.get_all_characters(page, String.to_integer(new_results_per_page))
     socket = assign(socket, :results_per_page, String.to_integer(new_results_per_page))
     {:noreply, assign(socket, :characters, characters)}
