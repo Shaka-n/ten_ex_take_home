@@ -27,29 +27,29 @@ defmodule TenExTakeHomeWeb.CharactersLive do
   end
 
   def mount(_params, _, socket) do
-    characters = MarvelApi.get_all_characters()
-    socket = assign(socket, :page, 1)
+    {:ok, characters} = MarvelApi.get_all_characters()
+    socket = assign(socket, :page, 0)
     socket = assign(socket, :results_per_page, 20)
     socket = assign(socket, form: to_form(%{"results_per_page" => 20}))
     {:ok, assign(socket, :characters, characters)}
   end
 
   def handle_event("next-characters", _, %{assigns: %{page: page, results_per_page: results_per_page}}= socket) do
-    characters = MarvelApi.get_all_characters(page + 1, results_per_page)
+    {:ok, characters} = MarvelApi.get_all_characters(page + 1, results_per_page)
     socket = assign(socket, :page, page + 1)
     socket = assign(socket, form: to_form(%{"results_per_page" => results_per_page}))
     {:noreply, assign(socket, :characters, characters)}
   end
 
   def handle_event("previous-characters", _, %{assigns: %{page: page, results_per_page: results_per_page}}= socket) do
-    characters = MarvelApi.get_all_characters(page - 1, results_per_page)
+    {:ok, characters} = MarvelApi.get_all_characters(page - 1, results_per_page)
     socket = assign(socket, :page, page - 1)
     socket = assign(socket, form: to_form(%{"results_per_page" => results_per_page}))
     {:noreply, assign(socket, :characters, characters)}
   end
 
   def handle_event("update-results-per-page", %{"results_per_page" => new_results_per_page}=payload, %{assigns: %{page: page}} = socket) do
-    characters = MarvelApi.get_all_characters(page, String.to_integer(new_results_per_page))
+    {:ok, characters} = MarvelApi.get_all_characters(page, String.to_integer(new_results_per_page))
     socket = assign(socket, :results_per_page, String.to_integer(new_results_per_page))
     {:noreply, assign(socket, :characters, characters)}
   end

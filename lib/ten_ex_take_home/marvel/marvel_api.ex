@@ -5,7 +5,7 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
 
   alias TenExTakeHome.MarvelApi.MarvelApiMetrics
 
-  def get_all_characters(page \\ 1, results_per_page \\ 20) do
+  def get_all_characters(page \\ 0, results_per_page \\ 20) do
     {:ok, characters} = check_cache(:characters)
 
     {next_etag, next_characters_list} = if characters["#{page}"], do: characters["#{page}"], else: {"", []}
@@ -23,10 +23,12 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
         MarvelApiMetrics.insert_marvel_api_metric(%{etag: decoded["etag"], resource: "characters"})
         Cachex.put(:marvel, :characters, Map.put(characters, "#{page}", {decoded["etag"], next_characters_list}))
 
-        next_characters_list
+        {:ok, next_characters_list}
       304 ->
         MarvelApiMetrics.insert_marvel_api_metric(%{etag: next_etag, resource: "characters"})
-        next_characters_list
+        {:ok, next_characters_list}
+      _ ->
+        {:error, "Something has gone wrong when contacting the Marvel API."}
     end
   end
 
@@ -35,7 +37,7 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
     private_key = System.get_env("private_marvel_key")
     public_key = System.get_env("public_marvel_key")
     hash = Base.encode16(:erlang.md5(timestamp <> private_key <> public_key), case: :lower)
-    offset = page * results_per_page
+    offset = if page == 0, do: 0, else: page * results_per_page
     [ts: timestamp, apikey: public_key, hash: hash, offset: offset, limit: results_per_page]
   end
 
