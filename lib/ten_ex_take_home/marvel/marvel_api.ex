@@ -32,8 +32,8 @@ defmodule TenExTakeHome.Marvel.MarvelApi do
 
   defp configure_params(page, results_per_page) do
     timestamp = "#{DateTime.to_unix(DateTime.utc_now())}"
-    private_key = Application.get_env(:ten_ex_take_home, :private_marvel_key)
-    public_key = Application.get_env(:ten_ex_take_home, :public_marvel_key)
+    private_key = System.get_env("private_marvel_key")
+    public_key = System.get_env("public_marvel_key")
     hash = Base.encode16(:erlang.md5(timestamp <> private_key <> public_key), case: :lower)
     offset = page * results_per_page
     [ts: timestamp, apikey: public_key, hash: hash, offset: offset, limit: results_per_page]
