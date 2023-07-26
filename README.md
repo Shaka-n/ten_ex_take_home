@@ -43,6 +43,9 @@ changes as part of the pair review session.
 ## Goals
   1. Fetch the characters from the Marvel API. Hint: You will use the URL
   http://gateway.marvel.com/v1/public/characters?[authenticated_params]
+
+*Solution*   
+
    The most complex part of querying this api is creating a hash from the public and private keys using md5 encoding.
    This I achieved using erlangs kernel level helper function for such hashing.
    Reading through this API's documentation, I found that they implement the etag attribute for their resources.
@@ -54,6 +57,9 @@ changes as part of the pair review session.
   3. This is slow, every time we load the page, we need to fetch all the data again from the Marvel
   API. Let's implement a cache that stores this API call in memory so we don't need to keep
   fetching it on each page reload.
+
+  *Solution*
+
     The dependency-free way to implement caching in Elixir is to start an ETS (erlang term storage) table
     within a GenServer. This way, values can be stored in memory, cleared after a specified period, and cleaned up
     when the GenServer terminates. However, I was concerned about time, so I opted for an existing Hex package that
@@ -67,6 +73,9 @@ changes as part of the pair review session.
 
   4. Upper management really wants to know how often we are making requests to the Marvel API, so
   let's capture the timestamp of each successful API call into a database table.
+
+  *Solution*
+
     This was a matter of generating a migration to store the data, writing a schema for the in-memory struct, and 
     writing necessary context functions. I felt that since this data is ostensibly for analysis, it would make 
     sense to only have read and write functionality. Since destroying or altering our records would compromise 
@@ -77,6 +86,8 @@ changes as part of the pair review session.
 
   5. You will notice that the API is only giving us the first 20 results when we call it. Let's implement a
   pagination system to allow the users to see additional results in the UI. How does this affect our cache? Should we change anything?
+
+  *Solution*
     I implemented pagination by creating a form in the LiveView view that allows users to input how many characters
     they would like to see. When submitted, this number is updated on the socket. Also saved on the socket is the current "page",
     which in this case is an abstract representation of the users position within the list of characters. When a rerender of the page
@@ -87,6 +98,8 @@ changes as part of the pair review session.
 
   6. Let's add more test coverage. We want to mock the API calls, test the front end results, unit test
   the api authentication code, etc.
+
+  *Solution*
     At this point of the challenge I felt I was running low on time, and so only had time to implement one test. I chose to test the
     happy path return value of get_all_characters/2. To do this, I added ExVCR as a dependency. This package allows me to record and 
     mock initial API calls made during tests so such calls do not need to be made every time the test suite is run. ExVCR works by 
@@ -96,6 +109,8 @@ changes as part of the pair review session.
   7. What are some ways that we can improve the current code we just wrote? Think through the following:
   - Cache improvements (invalidation, pre-fetching, data optimization, handling api call failures, etc).
   - Improvements to the API interface.
+
+  *Thoughts on improvements*
 
   If I had more time I would improve my solution by:
     - Handling server errors by serving what data we had in the cache, if any
