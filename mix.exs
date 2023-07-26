@@ -51,7 +51,7 @@ defmodule TenExTakeHome.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:httpoison, "~> 2.0"},
-      {:cachex, "3.4.0"},
+      {:cachex, "3.6.0"},
       {:exvcr, "~> 0.11", only: :test}
     ]
   end
