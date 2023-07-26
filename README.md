@@ -44,12 +44,12 @@ changes as part of the pair review session.
   1. Fetch the characters from the Marvel API. Hint: You will use the URL
   http://gateway.marvel.com/v1/public/characters?[authenticated_params]
 
-  *Solution*   
+    *Solution*   
 
-   The most complex part of querying this api is creating a hash from the public and private keys using md5 encoding.
-   This I achieved using erlangs kernel level helper function for such hashing.
-   Reading through this API's documentation, I found that they implement the etag attribute for their resources. 
-   The etag is a type of version indicator that would make caching much simpler as I move through the objectives.
+      The most complex part of querying this api is creating a hash from the public and private keys using md5 encoding.
+      This I achieved using erlangs kernel level helper function for such hashing.
+      Reading through this API's documentation, I found that they implement the etag attribute for their resources. 
+      The etag is a type of version indicator that would make caching much simpler as I move through the objectives.
 
   2. Render the characters' names in a list on the UI with LiveView or via a controller and view.
     
@@ -126,4 +126,7 @@ changes as part of the pair review session.
     
 
 8. Now let's deploy this to fly.io. It is free to make an account and deploy a starter application. Follow their [getting started guide](https://fly.io/docs/elixir/getting-started/existing/).
-  You can find this project deployed live here: https://stefan-sahagian-ten-ex-take-home.fly.dev/characters
+
+  *Deployment*
+  
+    You can find this project deployed live here: https://stefan-sahagian-ten-ex-take-home.fly.dev/characters
