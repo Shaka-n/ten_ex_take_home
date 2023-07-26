@@ -44,15 +44,18 @@ changes as part of the pair review session.
   1. Fetch the characters from the Marvel API. Hint: You will use the URL
   http://gateway.marvel.com/v1/public/characters?[authenticated_params]
 
-*Solution*   
+  *Solution*   
 
    The most complex part of querying this api is creating a hash from the public and private keys using md5 encoding.
    This I achieved using erlangs kernel level helper function for such hashing.
-   Reading through this API's documentation, I found that they implement the etag attribute for their resources.
-  The etag is a type of version indicator that would make caching much simpler as I move through the objectives.
+   Reading through this API's documentation, I found that they implement the etag attribute for their resources. 
+   The etag is a type of version indicator that would make caching much simpler as I move through the objectives.
 
   2. Render the characters' names in a list on the UI with LiveView or via a controller and view.
-    Creating an unordered list view with LiveView was the fastest way achieve this goal.
+    
+    *Solution* 
+    
+      Creating an unordered list view with LiveView was the fastest way achieve this goal.
 
   3. This is slow, every time we load the page, we need to fetch all the data again from the Marvel
   API. Let's implement a cache that stores this API call in memory so we don't need to keep
@@ -88,6 +91,7 @@ changes as part of the pair review session.
   pagination system to allow the users to see additional results in the UI. How does this affect our cache? Should we change anything?
 
   *Solution*
+
     I implemented pagination by creating a form in the LiveView view that allows users to input how many characters
     they would like to see. When submitted, this number is updated on the socket. Also saved on the socket is the current "page",
     which in this case is an abstract representation of the users position within the list of characters. When a rerender of the page
@@ -100,6 +104,7 @@ changes as part of the pair review session.
   the api authentication code, etc.
 
   *Solution*
+
     At this point of the challenge I felt I was running low on time, and so only had time to implement one test. I chose to test the
     happy path return value of get_all_characters/2. To do this, I added ExVCR as a dependency. This package allows me to record and 
     mock initial API calls made during tests so such calls do not need to be made every time the test suite is run. ExVCR works by 
@@ -112,12 +117,12 @@ changes as part of the pair review session.
 
   *Thoughts on improvements*
 
-  If I had more time I would improve my solution by:
-    - Handling server errors by serving what data we had in the cache, if any
-    - Recording additional VCRs of other potential responses and testing for those cases (e.g. 500 errors)
-    - Designing the view in such a way as to limit the variation in results-per-page. Etags change based
-      on the number of results requested, and so the cache could be storing every variation between 1 and N,
-      which is inefficient. Limiting the results to common intervals (i.e. 10, 100, 1000, etc.) would prevent this.
+    If I had more time I would improve my solution by:
+      - Handling server errors by serving what data we had in the cache, if any
+      - Recording additional VCRs of other potential responses and testing for those cases (e.g. 500 errors)
+      - Designing the view in such a way as to limit the variation in results-per-page. Etags change based
+        on the number of results requested, and so the cache could be storing every variation between 1 and N,
+        which is inefficient. Limiting the results to common intervals (i.e. 10, 100, 1000, etc.) would prevent this.
     
 
 8. Now let's deploy this to fly.io. It is free to make an account and deploy a starter application. Follow their [getting started guide](https://fly.io/docs/elixir/getting-started/existing/).
